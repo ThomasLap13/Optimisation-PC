@@ -7,6 +7,7 @@ function Remove-Bloatware {
         "Microsoft.XboxGamingOverlay",
         "Microsoft.People",
         "Microsoft.News",
+        "Microsoft.BingNews",
         "Microsoft.SkypeApp",
         "Microsoft.GetHelp",
         "Microsoft.YourPhone",
@@ -15,8 +16,22 @@ function Remove-Bloatware {
         "Microsoft.WindowsMaps",
         "Microsoft.Getstarted",
         "Microsoft.Paint",
-        "Microsoft.Getstarted",
-        "Microsoft.Tips"
+        "Microsoft.Tips",
+        "MicrosoftCorporationII.QuickAssist",         # Assistance rapide
+        "Microsoft.windowscommunicationsapps",        # Calendrier / Courrier
+        "Microsoft.WindowsCamera",                    # Camera
+        "Clipchamp.Clipchamp",                        # Clipchamp
+        "Microsoft.549981C3F5F10",                    # Cortana
+        "Microsoft.WindowsSoundRecorder",             # Enregistreur Vocal
+        "Microsoft.WindowsAlarms",                    # Horloge
+        "Microsoft.WindowsFeedbackHub",               # Hub commentaire
+        "McAfeeWPSSparsePackage",                     # McAfee
+        "Microsoft.BingWeather",                      # Meteo
+        "Microsoft.Todos",                            # Microsoft To Do
+        "Microsoft.MicrosoftOfficeHub",               # Office
+        "Microsoft.MicrosoftStickyNotes",             # Pense-bete
+        "Microsoft.MixedReality.Portal",              # Portail realite mixte
+        "Microsoft.MicrosoftSolitaireCollection"      # Solitaire
     )
     $removedCount = 0
     foreach ($app in $apps) {
@@ -33,5 +48,4 @@ function Remove-Bloatware {
     Write-Host "`nBloatwares supprimes : $removedCount / $($apps.Count)" -ForegroundColor Green
     Write-Host ""
     Write-Host "-------------------------------------------------------------------------------"
-    Write-Host ""
-}
+    Write-Host
