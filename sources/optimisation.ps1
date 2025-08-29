@@ -10,7 +10,7 @@
 . "$PSScriptRoot\inc\bloatware.ps1"
 . "$PSScriptRoot\inc\telemetry.ps1"
 . "$PSScriptRoot\inc\global.ps1"
-. "$PSScriptRoot\inc\launcher.ps1"
+. "$PSScriptRoot\inc\apps.ps1"
 
 # Debut du parametrage
 Write-Host ""
@@ -30,6 +30,6 @@ Write-Host ""
 if ((Request-RemoveBloatware) -eq 1) { Show-Loading "Suppression des bloatwares"; Remove-Bloatware }
 if ((Request-Telemetry) -eq 1) { Show-Loading "Desactivation de la telemetrie"; Disable-Telemetry }
 if ((Request-Settings) -eq 1) { Show-Loading "Parametrage des options"; Set-Settings }
-if ((Request-InstallLauncher) -eq 1) { Show-Loading "Installation des launchers"; Install-Launcher }
+if ((Request-InstallApps) -eq 1) { Show-Loading "Installation des applications"; Install-Apps }
 
 Wait-FinScript
