@@ -49,3 +49,4 @@ function Remove-Bloatware {
     Write-Host ""
     Write-Host "-------------------------------------------------------------------------------"
     Write-Host
+}
