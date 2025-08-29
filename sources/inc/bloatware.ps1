@@ -12,7 +12,11 @@ function Remove-Bloatware {
         "Microsoft.YourPhone",
         "Microsoft.ZuneMusic",
         "Microsoft.ZuneVideo",
-        "Microsoft.WindowsMaps"
+        "Microsoft.WindowsMaps",
+        "Microsoft.Getstarted",
+        "Microsoft.Paint",
+        "Microsoft.Getstarted",
+        "Microsoft.Tips"
     )
     $removedCount = 0
     foreach ($app in $apps) {
