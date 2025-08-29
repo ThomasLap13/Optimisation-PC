@@ -27,4 +27,7 @@ function Remove-Bloatware {
     }
 
     Write-Host "`nBloatwares supprimes : $removedCount / $($apps.Count)" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "-------------------------------------------------------------------------------"
+    Write-Host ""
 }

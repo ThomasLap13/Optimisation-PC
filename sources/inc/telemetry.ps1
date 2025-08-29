@@ -1,20 +1,24 @@
 function Request-Telemetry {
     return Read-Host "Souhaitez-vous desactiver la telemetrie ? (1 = Oui / 0 = Non)"
 }
-function Disable-Telemetry {
-    Write-Host "`nDesactivation complete de la telemetrie..." -ForegroundColor Cyan
 
-    # 1. Desactivation des services lies a la telemetrie
+function Disable-Telemetry {
+    $countTotal = 0
+    # Services a desactiver
     $services = @("DiagTrack", "dmwappushservice", "WMPNetworkSvc")
     foreach ($service in $services) {
-        Get-Service -Name $service -ErrorAction SilentlyContinue | ForEach-Object {
-            Stop-Service -Name $_.Name -Force -ErrorAction SilentlyContinue
-            Set-Service -Name $_.Name -StartupType Disabled
-            Write-Host "Service desactive : $($_.Name)" -ForegroundColor Yellow
+        $svc = Get-Service -Name $service -ErrorAction SilentlyContinue
+        if ($svc) {
+            Stop-Service -Name $service -Force -ErrorAction SilentlyContinue
+            Set-Service -Name $service -StartupType Disabled
+            Write-Host "Suppression de : $service" -ForegroundColor Yellow
+            $countTotal++
+        } else {
+            Write-Host "Non trouve : $service" -ForegroundColor DarkGray
         }
     }
 
-    # 2. Suppression des taches planifiees de telemetrie
+    # Taches planifiees a supprimer
     $tasks = @(
         "\Microsoft\Windows\Application Experience\ProgramDataUpdater",
         "\Microsoft\Windows\Autochk\Proxy",
@@ -23,36 +27,52 @@ function Disable-Telemetry {
         "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
     )
     foreach ($task in $tasks) {
-        try {
+        $result = schtasks /Query /TN $task 2>$null
+        if ($result) {
             schtasks /Delete /TN $task /F | Out-Null
-            Write-Host "Tache supprimee : $task" -ForegroundColor Yellow
-        } catch {
-            Write-Host "Tache introuvable : $task" -ForegroundColor DarkGray
+            Write-Host "Suppression de : $task" -ForegroundColor Yellow
+            $countTotal++
+        } else {
+            Write-Host "Non trouve : $task" -ForegroundColor DarkGray
         }
     }
 
-    # 3. Modification du registre pour desactiver la collecte de donnees
+    # Clés de registre
     $regPaths = @(
         "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection",
         "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
     )
     foreach ($path in $regPaths) {
         if (!(Test-Path $path)) { New-Item -Path $path -Force | Out-Null }
-        Set-ItemProperty -Path $path -Name "AllowTelemetry" -Value 0 -Type DWord
-        Write-Host "Cle modifiee : $path\AllowTelemetry = 0" -ForegroundColor Yellow
+        try {
+            Set-ItemProperty -Path $path -Name "AllowTelemetry" -Value 0 -Type DWord
+            Write-Host "Suppression de : $path\AllowTelemetry" -ForegroundColor Yellow
+            $countTotal++
+        } catch {
+            Write-Host "Non trouve : $path\AllowTelemetry" -ForegroundColor DarkGray
+        }
     }
 
-    # 4. Desactivation de la telemetrie via Group Policy (si applicable)
+    # Preview Builds
     try {
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" -Name "AllowBuildPreview" -Value 0 -Type DWord
-        Write-Host "Cle modifiee : PreviewBuilds desactive" -ForegroundColor Yellow
-    } catch {}
+        Write-Host "Suppression de : PreviewBuilds" -ForegroundColor Yellow
+        $countTotal++
+    } catch {
+        Write-Host "Non trouve : PreviewBuilds" -ForegroundColor DarkGray
+    }
 
-    # 5. Desactivation des feedbacks automatiques
+    # Feedback automatique
     try {
         Set-ItemProperty -Path "HKCU:\Software\Microsoft\Siuf\Rules" -Name "NumberOfSIUFInPeriod" -Value 0 -Type DWord
-        Write-Host "Feedback automatique desactive" -ForegroundColor Yellow
-    } catch {}
+        Write-Host "Suppression de : Feedback automatique" -ForegroundColor Yellow
+        $countTotal++
+    } catch {
+        Write-Host "Non trouve : Feedback automatique" -ForegroundColor DarkGray
+    }
 
-    Write-Host "`nTelemetrie desactivee avec succes." -
+    Write-Host "`nTelemetrie desactivee : $countTotal modifications appliquees." -ForegroundColor Green
+    Write-Host ""
+    Write-Host "-------------------------------------------------------------------------------"
+    Write-Host ""
 }
