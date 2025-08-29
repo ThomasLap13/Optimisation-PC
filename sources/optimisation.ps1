@@ -9,6 +9,7 @@
 . "$PSScriptRoot\inc\fonction-script.ps1"
 . "$PSScriptRoot\inc\bloatware.ps1"
 . "$PSScriptRoot\inc\telemetry.ps1"
+. "$PSScriptRoot\inc\global.ps1"
 
 # Debut du parametrage
 Write-Host ""
@@ -27,5 +28,6 @@ Write-Host ""
 # Configuration
 if ((Request-RemoveBloatware) -eq 1) { Show-Loading "Suppression des bloatwares"; Remove-Bloatware }
 if ((Request-Telemetry) -eq 1) { Show-Loading "Desactivation de la telemetrie"; Disable-Telemetry }
+if ((Request-Settings) -eq 1) { Show-Loading "Parametrage des options"; Set-Settings }
 
 Wait-FinScript
